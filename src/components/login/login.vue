@@ -8,7 +8,7 @@
             <el-form-item label="密码">
                 <el-input v-model="formData.password"></el-input>
             </el-form-item>
-            <el-button class="login-button" type="primary">登录</el-button>
+            <el-button class="login-button" type="primary" @click.prevent="handleLogin()">登录</el-button>
         </el-form>
     </div>
 </template>
@@ -21,6 +21,17 @@ export default {
                 username: '',
                 password: ''
             }
+        }
+    },
+    methods: {
+        handleLogin() {
+            this.$http.post('/login',this.formData).then((res) => {
+                const {data, meta: {msg, status}} = res.data;
+                if(status === 200) {
+                    // 登录成功，跳转到home页
+                    this.$router.push({name: 'home'});
+                }
+            })
         }
     }
 };
