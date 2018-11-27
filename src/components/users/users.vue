@@ -1,33 +1,23 @@
 <template>
   <el-card class="card">
-    <!-- 面包屑组件 -->
+    <!-- 1. 面包屑组件 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>用户管理</el-breadcrumb-item>
       <el-breadcrumb-item>用户列表</el-breadcrumb-item>
     </el-breadcrumb>
-    <!-- 搜索 -->
+    <!-- 2. 搜索 -->
     <el-row class="searchRow">
       <el-col :span="24">
-        <el-input
-          placeholder="请输入内容"
-          clearable
-          class="searchInput"
-        >
-          <el-button
-            slot="append"
-            icon="el-icon-search"
-          ></el-button>
+        <el-input placeholder="请输入内容" @clear="loadUserList()" v-model="query" clearable class="searchInput">
+          <el-button slot="append" @click="searchUser()" icon="el-icon-search"></el-button>
         </el-input>
-        <el-button
-          type="success"
-          plain
-        >添加用户</el-button>
+        <el-button type="success" plain @click="showAddUserDia()">添加用户</el-button>
       </el-col>
     </el-row>
-    <!-- 表格 -->
+    <!-- 3. 表格 -->
     <el-table
-      height="200"
+      height="300"
       class="userListTable"
       :data="userlist"
       style="width: 100%"
@@ -82,32 +72,14 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            plain
-            type="primary"
-            icon="el-icon-edit"
-            circle
-          ></el-button>
-          <el-button
-            size="mini"
-            plain
-            type="danger"
-            icon="el-icon-delete"
-            circle
-          ></el-button>
-          <el-button
-            size="mini"
-            plain
-            type="success"
-            icon="el-icon-check"
-            circle
-          ></el-button>
+          <el-button size="mini" plain type="primary" @click="showEditUserMsgBox()" icon="el-icon-edit" circle></el-button>
+          <el-button size="mini" plain type="danger" @click="showDeleUserMsgBox(scope.row.id)" icon="el-icon-delete" circle></el-button>
+          <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <!-- 分页 -->
+    <!-- 4. 分页 -->
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -118,6 +90,46 @@
       :total="total"
     >
     </el-pagination>
+
+    <!-- 添加用户对话框 -->
+    <el-dialog title="添加用户" :visible.sync="dialogFormVisibleAdd">
+      <el-form :model="form">
+        <el-form-item label="用户名" label-width="100px">
+          <el-input v-model="form.username" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" label-width="100px">
+          <el-input v-model="form.password" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" label-width="100px">
+          <el-input v-model="form.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" label-width="100px">
+          <el-input v-model="form.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisibleAdd = false, addUser()" >确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 编辑用户对话框 -->
+    <el-dialog title="编辑用户" :visible.sync="dialogFormVisibleEdit">
+      <el-form :model="form">
+        <el-form-item label="用户名" label-width="100px">
+          <el-input v-model="form.username" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" label-width="100px">
+          <el-input v-model="form.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" label-width="100px">
+          <el-input v-model="form.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisibleEdit = false" >确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -129,7 +141,17 @@ export default {
           pagenum: 1,
           pagesize: 2,
           userlist: [],
-          total: 0
+          total: 0,
+          // 添加对话框的属性
+          dialogFormVisibleAdd: false,
+          dialogFormVisibleEdit: false,
+          // 添加对话框的值
+          form: {
+            username: '',
+            password: '',
+            email: '',
+            mobile: ''
+          }
         }
       },
       
@@ -137,6 +159,73 @@ export default {
           this.loadData();
       },
       methods: {
+          // 编辑用户--显示对话框
+          showEditUserMsgBox() {
+            this.dialogFormVisibleEdit = true;
+          },
+          // 删除用户-显示消息框(confirm)
+          showDeleUserMsgBox(userId) {
+            this.$confirm('是否删除', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(async () => {
+              // 发送请求
+              const res = await this.$http.delete(`users/${userId}`);
+              const {meta: {status, msg}, data} = res.data;
+              if(status === 200) {
+                // 回到第一页
+                this.pagenum = 1;
+                // 更新视图
+                this.loadData();
+                // 提示
+                this.$message({
+                  type: 'success',
+                  message: msg
+                });
+              }
+               
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消删除'
+              });          
+            });
+          },
+          // 添加用户
+          async addUser() {
+            // alert('11111111');
+            // 发送请求
+            const res = await this.$http.post(`users`,this.form);
+            const {meta: {status, msg}, data} = res.data;
+            // 2. 关闭对话框
+            this.dialogFormVisibleAdd = false;
+            if(status === 201) {
+              // 1. 提示成功
+              this.$message.success(msg);
+              // 3. 更新视图
+              this.loadData();
+              // 回到第一页
+              // this.pagenum = 1;
+              // 4. 清空文本框
+              this.form = {};
+            } else {
+              this.$message.warning(msg);
+            }
+          },
+          // 显示添加用户对话框
+          showAddUserDia() {
+            this.dialogFormVisibleAdd = true;
+          },
+          // 清空搜索框
+          loadUserList() {
+            // 重新获取数据
+            this.loadData();
+          },
+          // 搜索用户
+          searchUser() {
+            this.loadData();
+          },
           // 分页
           handleSizeChange(val) {
             // this.pagesize = val;
