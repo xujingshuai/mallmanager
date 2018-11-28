@@ -10,6 +10,7 @@
       type="success"
       plain
       class="roleButton"
+      @click="addRole()"
     >添加角色</el-button>
     <!-- 表格 -->
     <el-table
@@ -61,6 +62,22 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 添加角色对话框 -->
+    <el-dialog title="添加角色" :visible.sync="dialogFormVisibleRole">
+        <el-form :model="form">
+            <el-form-item label="角色名称" label-width="100px">
+                <el-input v-model="form.roleName" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="角色描述" label-width="100px">
+                <el-input v-model="form.roleDesc" autocomplete="off"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisibleRole = false">取 消</el-button>
+            <el-button type="primary" @click="dialogFormVisibleRole = false">确 定</el-button>
+        </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -68,13 +85,23 @@
 export default {
     data() {
         return {
-            rolelist: []
+            rolelist: [],
+            form: {
+                roleName: '',
+                roleDesc: ''
+            },
+            // 控制添加角色对话框的显示/隐藏属性
+            dialogFormVisibleRole: false
         }
     },
     created() {
         this.getRoleList();
     },
     methods: {
+        // 添加角色 --> 显示对话框
+        addRole() {
+            this.dialogFormVisibleRole = true;
+        },
         // 获取数据
         async getRoleList() {
             const res = await this.$http.get(`roles`);
