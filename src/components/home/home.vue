@@ -22,14 +22,13 @@
         <el-container>
             <!-- 侧边栏 -->
             <el-aside class="aside" width="200px">
-                <!-- 1 -->
                 <el-menu :router="true" :unique-opened="true">
+                    <!-- 1 -->
                     <el-submenu index="1">
                         <template slot="title">
                             <i class="el-icon-location"></i>
                             <span>用户管理</span>
                         </template>
-
                         <el-menu-item index="users">
                             <i class="el-icon-menu"></i>
                             <span>用户列表</span>
@@ -45,7 +44,7 @@
                             <i class="el-icon-menu"></i>
                             <span>角色列表</span>
                         </el-menu-item>
-                        <el-menu-item index="rights">
+                        <el-menu-item index="right">
                             <i class="el-icon-menu"></i>
                             <span>权限列表</span>
                         </el-menu-item>

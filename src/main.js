@@ -8,6 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import '@/assets/css/reset.css'
 import MyHttpServer from '@/plugins/http.js'
 import moment from 'moment'
+import MyBread from '@/components/cuscom/myBread.vue'
 
 Vue.use(ElementUI);
 Vue.use(MyHttpServer);
@@ -16,6 +17,9 @@ Vue.use(MyHttpServer);
 Vue.filter('fmtDate', (v) => {
   return moment(v).format('YYYY-MM-DD');
 })
+
+// 定义全局组件
+Vue.component(MyBread.name,MyBread);
 
 // Vue.config.productionTip = false
 
