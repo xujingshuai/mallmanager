@@ -109,7 +109,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisibleAdd = false, addUser()" >确 定</el-button>
+        <el-button type="primary" @click="addUser()" >确 定</el-button>
       </div>
     </el-dialog>
     <!-- 编辑用户对话框 -->
@@ -160,7 +160,8 @@ export default {
       },
       methods: {
           // 编辑用户--显示对话框
-          showEditUserMsgBox() {
+          async showEditUserMsgBox() {
+            // 显示对话框
             this.dialogFormVisibleEdit = true;
           },
           // 删除用户-显示消息框(confirm)
