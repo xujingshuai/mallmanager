@@ -44,7 +44,7 @@
             type="primary"
             icon="el-icon-edit"
             circle
-            @click="editRole(scope.row)"
+            @click="editRoleDia(scope.row)"
           ></el-button>
           <el-button
             size="mini"
@@ -107,9 +107,9 @@ export default {
                 roleName: '',
                 roleDesc: ''
             },
-            // 控制添加角色对话框的显示/隐藏属性
+            // 控制添加角色对话框的隐藏属性
             dialogFormVisibleAdd: false,
-            // 控制编辑角色对话框的显示/隐藏属性
+            // 控制编辑角色对话框的隐藏属性
             dialogFormVisibleEdit: false
         }
     },
@@ -117,16 +117,26 @@ export default {
         this.getRoleList();
     },
     methods: {
-    		// 
-    		  // 编辑角色 --> 显示对话框
-    		  async editRole(role) {
+    		// 编辑角色对话框 -->确定按钮
+    		async editRole() {
+    			const res = await this.$http.put(`roles/${this.form.id}`,this.form);
+//  			console.log(res);
+					const {data, meta: {status,msg}} = res.data;
+					if(status === 200) {
+						// 更新视图
+						this.getRoleList();
+						// 提示
+						this.$message.success(msg);
+						// 关闭对话框
+						this.dialogFormVisibleEdit = false;
+					}
+    		},
+    		// 编辑角色 --> 显示对话框
+    		editRoleDia(role) {
     			// 显示对话框
     			this.dialogFormVisibleEdit = true;
-//  			console.log(role);
-    			// 发送请求
-    			const res = await this.$http.get(`roles/${role.id}`);
-//  			console.log(res);
-					this.form = res.data.data;					
+    			// 获取数据
+					this.form = role;					
     		},
     		// 删除角色
     		deleRole(role) {
