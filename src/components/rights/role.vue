@@ -121,15 +121,17 @@
     <!-- 修改权限对话框-->
     <el-dialog title="修改权限" :visible.sync="dialogFormVisiblePut">
       <el-tree
+        ref = "tree"
         :data="treelist"
         show-checkbox
         node-key="id"
         default-expand-all
+        :default-checked-keys="arrCheck"
         :props="defaultProps">
       </el-tree>
       <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisiblePut = false">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisiblePut = false">确 定</el-button>
+          <el-button type="primary" @click="setRoleRight()">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -155,20 +157,51 @@ export default {
       defaultProps: {
           children: 'children',
           label: 'authName'
-        }
+        },
+      // 显示角色的所有权限
+      arrCheck: [],
+      currRoleId: ''
     };
   },
   created() {
     this.getRoleList();
   },
   methods: {
+    // 修改权限 -- 发送请求
+    async setRoleRight() {
+      // 获取全选的id getCheckedKeys()
+      let arr1 = this.$refs.tree.getCheckedKeys()
+
+      // 获取半选的id getHalfCheckedKeys()
+      let arr2 = this.$refs.tree.getHalfCheckedKeys()
+
+      let arr = [...arr1,...arr2];
+      // roles/:roleId/rights
+      const res = await this.$http.post(`roles/${this.currRoleId}/rights`,{rids:arr.join(',')})
+
+      // 关闭对话框
+      this.dialogFormVisiblePut = false
+      // 更新视图
+      this.getRoleList();
+    },
     // 修改权限 -- 显示对话框
     async showSetRight(role) {
+      this.currRoleId = role.id
       // 显示对话框
       this.dialogFormVisiblePut = true
       // 发送请求
       const res = await this.$http.get(`rights/tree`)
       this.treelist = res.data.data
+      let arrtemp2 = []
+      role.children.forEach(item1 => {
+        item1.children.forEach(item2 => {
+          item2.children.forEach(item3 => {
+            arrtemp2.push(item3.id);
+          })
+        })
+      });
+      this.arrCheck = arrtemp2;
+      console.log(role);
     },
     // 取消权限
     async deleRight(role,rightId) {
