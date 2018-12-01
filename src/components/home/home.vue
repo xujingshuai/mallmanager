@@ -46,75 +46,75 @@
               <i class="el-icon-location"></i>
               <span>用户管理</span>
             </template>
-<el-menu-item index="users">
-    <i class="el-icon-menu"></i>
-    <span>用户列表</span>
-</el-menu-item>
-    </el-submenu>
-    <!-- 2 -->
-    <el-submenu index="2">
-<template slot="title">
-  <i class="el-icon-location"></i>
-  <span>权限管理</span>
-</template>
-<el-menu-item index="role">
-    <i class="el-icon-menu"></i>
-    <span>角色列表</span>
-</el-menu-item>
-<el-menu-item index="right">
-    <i class="el-icon-menu"></i>
-    <span>权限列表</span>
-</el-menu-item>
-    </el-submenu>
+              <el-menu-item index="users">
+                  <i class="el-icon-menu"></i>
+                  <span>用户列表</span>
+              </el-menu-item>
+          </el-submenu>
+        <!-- 2 -->
+        <el-submenu index="2">
+          <template slot="title">
+            <i class="el-icon-location"></i>
+            <span>权限管理</span>
+          </template>
+          <el-menu-item index="role">
+              <i class="el-icon-menu"></i>
+              <span>角色列表</span>
+          </el-menu-item>
+          <el-menu-item index="right">
+              <i class="el-icon-menu"></i>
+              <span>权限列表</span>
+          </el-menu-item>
+      </el-submenu>
     <!-- 3 -->
-    <el-submenu index="3">
-<template slot="title">
-  <i class="el-icon-location"></i>
-  <span>商品管理</span>
-</template>
-<el-menu-item index="1-1">
-    <i class="el-icon-menu"></i>
-    <span>商品列表</span>
-</el-menu-item>
-<el-menu-item index="1-1">
-    <i class="el-icon-menu"></i>
-    <span>分类参数</span>
-</el-menu-item>
-<el-menu-item index="1-1">
-    <i class="el-icon-menu"></i>
-    <span>商品列表</span>
-</el-menu-item>
-    </el-submenu>
+      <el-submenu index="3">
+        <template slot="title">
+          <i class="el-icon-location"></i>
+          <span>商品管理</span>
+        </template>
+        <el-menu-item index="1-1">
+            <i class="el-icon-menu"></i>
+            <span>商品列表</span>
+        </el-menu-item>
+        <el-menu-item index="1-2">
+            <i class="el-icon-menu"></i>
+            <span>分类参数</span>
+        </el-menu-item>
+        <el-menu-item index="1-1">
+            <i class="el-icon-menu"></i>
+            <span>商品列表</span>
+        </el-menu-item>
+      </el-submenu>
     <!-- 4 -->
-    <el-submenu index="4">
-<template slot="title">
-  <i class="el-icon-location"></i>
-  <span>订单管理</span>
-</template>
-<el-menu-item index="1-1">
-    <i class="el-icon-menu"></i>
-    <span>订单列表</span>
-</el-menu-item>
-    </el-submenu>
+      <el-submenu index="4">
+        <template slot="title">
+          <i class="el-icon-location"></i>
+          <span>订单管理</span>
+        </template>
+        <el-menu-item index="1-1">
+          <i class="el-icon-menu"></i>
+          <span>订单列表</span>
+        </el-menu-item>
+      </el-submenu>
     <!-- 5 -->
-    <el-submenu index="5">
-<template slot="title">
-  <i class="el-icon-location"></i>
-  <span>数据统计</span>
-</template>
-<el-menu-item index="1-1">
-    <i class="el-icon-menu"></i>
-    <span>数据报表</span>
-</el-menu-item>
-    </el-submenu>
-</el-menu>
+      <el-submenu index="5">
+        <template slot="title">
+          <i class="el-icon-location"></i>
+          <span>数据统计</span>
+        </template>
+        <el-menu-item index="1-1">
+          <i class="el-icon-menu"></i>
+          <span>数据报表</span>
+        </el-menu-item>
+      </el-submenu>
+    </el-menu>
     </el-aside>
-    <!-- 主体内容 -->
-    <el-main class="main">
-<router-view></router-view>
-    </el-main>
+      <!-- 主体内容 -->
+      <el-main class="main">
+        <router-view></router-view>
+      </el-main>
+  </el-container>
 </el-container>
-    </el-container>
 </template>
 
 <script>

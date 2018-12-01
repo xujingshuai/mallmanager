@@ -20,18 +20,20 @@
       <el-table-column type="expand">
       <template slot-scope="scope">
         <el-row v-for="(item1,index1) in scope.row.children" :key="index1">
+
           <el-col :span="4">
-            <el-tag  closable type="primary">{{item1.authName}}</el-tag>
+            <el-tag  @close="deleRight(scope.row,item1.id)"  closable type="primary">{{item1.authName}}</el-tag>
           </el-col>
+
           <el-col :span="20">
-            <er-row v-for="(item2,index2) in item1.children" :key="index2">
+            <el-row v-for="(item2,index2) in item1.children" :key="index2">
               <el-col :span="4">
-                <el-tag closable type="success">{{item2.authName}}</el-tag>
+                <el-tag  @close="deleRight(scope.row,item2.id)" closable type="success">{{item2.authName}}</el-tag>
               </el-col>
               <el-col :span="20">
-                <el-tag closable v-for="(item3,index3) in item2.children" :key="index3" type="warning">{{item3.authName}}</el-tag>
+                <el-tag @close="deleRight(scope.row,item3.id)"  closable v-for="(item3,index3) in item2.children" :key="index3" type="warning">{{item3.authName}}</el-tag>
               </el-col>
-            </er-row>
+            </el-row>
           </el-col>
         </el-row>
         <!-- 未分配权限提示 -->
@@ -104,10 +106,10 @@
     <el-dialog title="编辑角色" :visible.sync="dialogFormVisibleEdit">
       <el-form :model="form">
           <el-form-item label="角色名称" label-width="100px">
-      <el-input v-model="form.roleName" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="角色描述" label-width="100px">
-      <el-input v-model="form.roleDesc" autocomplete="off"></el-input>
+          <el-input disabled v-model="form.roleName" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="角色描述" label-width="100px">
+          <el-input v-model="form.roleDesc" autocomplete="off"></el-input>
           </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -137,6 +139,17 @@ export default {
     this.getRoleList();
   },
   methods: {
+    // 取消权限
+    async deleRight(role,rightId) {
+      // console.log(role);
+      // console.log(rightId);
+      const res = await this.$http.delete(`roles/${role.id}/rights/${rightId}`)
+      console.log(res);
+      console.log(role);
+      //  this.getRoleList();
+
+      role.children = res.data.data
+    },
     // 编辑角色对话框 -->确定按钮
     async editRole() {
       const res = await this.$http.put(`roles/${this.form.id}`, this.form);
@@ -227,7 +240,7 @@ export default {
     async getRoleList() {
       const res = await this.$http.get(`roles`);
       this.rolelist = res.data.data;
-      console.log(this.rolelist);
+      // console.log(this.rolelist);
       //  console.log(res);
     }
   }
