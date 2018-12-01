@@ -16,8 +16,28 @@
     <el-table
       :data="rolelist"
       style="width: 100%"
-      border
     >
+      <el-table-column type="expand">
+      <template slot-scope="scope">
+        <el-row v-for="(item1,index1) in scope.row.children" :key="index1">
+          <el-col :span="4">
+            <el-tag  closable type="primary">{{item1.authName}}</el-tag>
+          </el-col>
+          <el-col :span="20">
+            <er-row v-for="(item2,index2) in item1.children" :key="index2">
+              <el-col :span="4">
+                <el-tag closable type="success">{{item2.authName}}</el-tag>
+              </el-col>
+              <el-col :span="20">
+                <el-tag closable v-for="(item3,index3) in item2.children" :key="index3" type="warning">{{item3.authName}}</el-tag>
+              </el-col>
+            </er-row>
+          </el-col>
+        </el-row>
+        <!-- 未分配权限提示 -->
+        <span v-if="scope.row.children.length === 0">未分配权限</span>
+      </template>
+    </el-table-column>
       <!-- 序号 -->
       <el-table-column
         type="index"
@@ -67,33 +87,33 @@
 
     <!-- 添加角色对话框 -->
     <el-dialog title="添加角色" :visible.sync="dialogFormVisibleAdd">
-<el-form :model="form">
-    <el-form-item label="角色名称" label-width="100px">
-<el-input v-model="form.roleName" autocomplete="off"></el-input>
-    </el-form-item>
-    <el-form-item label="角色描述" label-width="100px">
-<el-input v-model="form.roleDesc" autocomplete="off"></el-input>
-    </el-form-item>
-</el-form>
-<div slot="footer" class="dialog-footer">
-    <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
-    <el-button type="primary" @click="addRole()">确 定</el-button>
-</div>
+      <el-form :model="form">
+          <el-form-item label="角色名称" label-width="100px">
+      <el-input v-model="form.roleName" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="角色描述" label-width="100px">
+      <el-input v-model="form.roleDesc" autocomplete="off"></el-input>
+          </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
+          <el-button type="primary" @click="addRole()">确 定</el-button>
+      </div>
     </el-dialog>
     <!-- 编辑对话框-->
     <el-dialog title="编辑角色" :visible.sync="dialogFormVisibleEdit">
-<el-form :model="form">
-    <el-form-item label="角色名称" label-width="100px">
-<el-input v-model="form.roleName" autocomplete="off"></el-input>
-    </el-form-item>
-    <el-form-item label="角色描述" label-width="100px">
-<el-input v-model="form.roleDesc" autocomplete="off"></el-input>
-    </el-form-item>
-</el-form>
-<div slot="footer" class="dialog-footer">
-    <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
-    <el-button type="primary" @click="editRole()">确 定</el-button>
-</div>
+      <el-form :model="form">
+          <el-form-item label="角色名称" label-width="100px">
+      <el-input v-model="form.roleName" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="角色描述" label-width="100px">
+      <el-input v-model="form.roleDesc" autocomplete="off"></el-input>
+          </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
+          <el-button type="primary" @click="editRole()">确 定</el-button>
+      </div>
     </el-dialog>
   </el-card>
 </template>
@@ -207,6 +227,7 @@ export default {
     async getRoleList() {
       const res = await this.$http.get(`roles`);
       this.rolelist = res.data.data;
+      console.log(this.rolelist);
       //  console.log(res);
     }
   }
