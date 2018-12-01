@@ -82,6 +82,7 @@
             type="success"
             icon="el-icon-check"
             circle
+            @click="showSetRight(scope.row)"
           ></el-button>
         </template>
       </el-table-column>
@@ -117,6 +118,20 @@
           <el-button type="primary" @click="editRole()">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 修改权限对话框-->
+    <el-dialog title="修改权限" :visible.sync="dialogFormVisiblePut">
+      <el-tree
+        :data="treelist"
+        show-checkbox
+        node-key="id"
+        default-expand-all
+        :props="defaultProps">
+      </el-tree>
+      <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisiblePut = false">取 消</el-button>
+          <el-button type="primary" @click="dialogFormVisiblePut = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -132,13 +147,29 @@ export default {
       // 控制添加角色对话框的隐藏属性
       dialogFormVisibleAdd: false,
       // 控制编辑角色对话框的隐藏属性
-      dialogFormVisibleEdit: false
+      dialogFormVisibleEdit: false,
+      // 控制修改权限对话框的隐藏属性
+      dialogFormVisiblePut: false,
+      // 树形结构
+      treelist: [],
+      defaultProps: {
+          children: 'children',
+          label: 'authName'
+        }
     };
   },
   created() {
     this.getRoleList();
   },
   methods: {
+    // 修改权限 -- 显示对话框
+    async showSetRight(role) {
+      // 显示对话框
+      this.dialogFormVisiblePut = true
+      // 发送请求
+      const res = await this.$http.get(`rights/tree`)
+      this.treelist = res.data.data
+    },
     // 取消权限
     async deleRight(role,rightId) {
       // console.log(role);
