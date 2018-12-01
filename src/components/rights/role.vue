@@ -67,138 +67,149 @@
 
     <!-- 添加角色对话框 -->
     <el-dialog title="添加角色" :visible.sync="dialogFormVisibleAdd">
-        <el-form :model="form">
-            <el-form-item label="角色名称" label-width="100px">
-                <el-input v-model="form.roleName" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="角色描述" label-width="100px">
-                <el-input v-model="form.roleDesc" autocomplete="off"></el-input>
-            </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
-            <el-button type="primary" @click="addRole()">确 定</el-button>
-        </div>
+<el-form :model="form">
+    <el-form-item label="角色名称" label-width="100px">
+<el-input v-model="form.roleName" autocomplete="off"></el-input>
+    </el-form-item>
+    <el-form-item label="角色描述" label-width="100px">
+<el-input v-model="form.roleDesc" autocomplete="off"></el-input>
+    </el-form-item>
+</el-form>
+<div slot="footer" class="dialog-footer">
+    <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
+    <el-button type="primary" @click="addRole()">确 定</el-button>
+</div>
     </el-dialog>
     <!-- 编辑对话框-->
     <el-dialog title="编辑角色" :visible.sync="dialogFormVisibleEdit">
-        <el-form :model="form">
-            <el-form-item label="角色名称" label-width="100px">
-                <el-input v-model="form.roleName" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="角色描述" label-width="100px">
-                <el-input v-model="form.roleDesc" autocomplete="off"></el-input>
-            </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
-            <el-button type="primary" @click="editRole()">确 定</el-button>
-        </div>
+<el-form :model="form">
+    <el-form-item label="角色名称" label-width="100px">
+<el-input v-model="form.roleName" autocomplete="off"></el-input>
+    </el-form-item>
+    <el-form-item label="角色描述" label-width="100px">
+<el-input v-model="form.roleDesc" autocomplete="off"></el-input>
+    </el-form-item>
+</el-form>
+<div slot="footer" class="dialog-footer">
+    <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
+    <el-button type="primary" @click="editRole()">确 定</el-button>
+</div>
     </el-dialog>
   </el-card>
 </template>
 
 <script>
 export default {
-    data() {
-        return {
-            rolelist: [],
-            form: {
-                roleName: '',
-                roleDesc: ''
-            },
-            // 控制添加角色对话框的隐藏属性
-            dialogFormVisibleAdd: false,
-            // 控制编辑角色对话框的隐藏属性
-            dialogFormVisibleEdit: false
-        }
-    },
-    created() {
+  data() {
+    return {
+      rolelist: [],
+      form: {
+        roleName: "",
+        roleDesc: ""
+      },
+      // 控制添加角色对话框的隐藏属性
+      dialogFormVisibleAdd: false,
+      // 控制编辑角色对话框的隐藏属性
+      dialogFormVisibleEdit: false
+    };
+  },
+  created() {
+    this.getRoleList();
+  },
+  methods: {
+    // 编辑角色对话框 -->确定按钮
+    async editRole() {
+      const res = await this.$http.put(`roles/${this.form.id}`, this.form);
+      //  			console.log(res);
+      const {
+        data,
+        meta: { status, msg }
+      } = res.data;
+      if (status === 200) {
+        // 更新视图
         this.getRoleList();
+        // 提示
+        this.$message.success(msg);
+        // 关闭对话框
+        this.dialogFormVisibleEdit = false;
+      }
     },
-    methods: {
-    		// 编辑角色对话框 -->确定按钮
-    		async editRole() {
-    			const res = await this.$http.put(`roles/${this.form.id}`,this.form);
-//  			console.log(res);
-					const {data, meta: {status,msg}} = res.data;
-					if(status === 200) {
-						// 更新视图
-						this.getRoleList();
-						// 提示
-						this.$message.success(msg);
-						// 关闭对话框
-						this.dialogFormVisibleEdit = false;
-					}
-    		},
-    		// 编辑角色 --> 显示对话框
-    		editRoleDia(role) {
-    			// 显示对话框
-    			this.dialogFormVisibleEdit = true;
-    			// 获取数据
-					this.form = role;					
-    		},
-    		// 删除角色
-    		deleRole(role) {
-    			this.$confirm('是否删除?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        	}).then(async () => {
-        		// 发送请求
-        		const res = await this.$http.delete(`roles/${role}`);
-        		const {data, meta: {msg,status}} = res.data;
-        		if(status === 200) {
-        			// 更新视图
-        			this.getRoleList();
-        			// 提示
-        			this.$message({
-	            type: 'success',
-	            message: '删除成功!'
-	          	});
-	          	// 关闭对话框
-	          	this.dialogFormVisibleAdd = false;
-        		}
-//      		console.log(res);
-        	}).catch(() => {
+    // 编辑角色 --> 显示对话框
+    editRoleDia(role) {
+      // 显示对话框
+      this.dialogFormVisibleEdit = true;
+      // 获取数据
+      this.form = role;
+    },
+    // 删除角色
+    deleRole(role) {
+      this.$confirm("是否删除?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          // 发送请求
+          const res = await this.$http.delete(`roles/${role}`);
+          const {
+            data,
+            meta: { msg, status }
+          } = res.data;
+          if (status === 200) {
+            // 更新视图
+            this.getRoleList();
+            // 提示
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+            // 关闭对话框
+            this.dialogFormVisibleAdd = false;
+          }
+          //      		console.log(res);
+        })
+        .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
-          	});          
-					});
-    		},
-    		// 添加角色对话框 -->确定按钮
-    		async addRole() {
-    			// 关闭对话框
-    			this.dialogFormVisibleAdd = false;
-    			// 发送请求
-    			const res = await this.$http.post(`roles`,this.form);
-//					console.log(res);
-					const {meta: {msg,status},data} = res.data;
-					// 判断是否添加成功
-					if(status === 201) {
-						// 给对象进行赋值
-						this.form = data;
-						//提示
-						this.$message.success(msg);
-						// 更新视图
-						this.getRoleList();
-					} else {
-						this.$message.error(msg);
-					}
-					
-    		},
-        // 添加角色 --> 显示对话框
-        addRoleDia() {
-            this.dialogFormVisibleAdd = true;
-        },
-        // 获取数据
-        async getRoleList() {
-            const res = await this.$http.get(`roles`);
-            this.rolelist = res.data.data;
-//          console.log(res);
-        }
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
+    // 添加角色对话框 -->确定按钮
+    async addRole() {
+      // 关闭对话框
+      this.dialogFormVisibleAdd = false;
+      // 发送请求
+      const res = await this.$http.post(`roles`, this.form);
+      //					console.log(res);
+      const {
+        meta: { msg, status },
+        data
+      } = res.data;
+      // 判断是否添加成功
+      if (status === 201) {
+        // 给对象进行赋值
+        this.form = data;
+        //提示
+        this.$message.success(msg);
+        // 更新视图
+        this.getRoleList();
+      } else {
+        this.$message.error(msg);
+      }
+    },
+    // 添加角色 --> 显示对话框
+    addRoleDia() {
+      this.dialogFormVisibleAdd = true;
+      this.form = {};
+    },
+    // 获取数据
+    async getRoleList() {
+      const res = await this.$http.get(`roles`);
+      this.rolelist = res.data.data;
+      //  console.log(res);
     }
+  }
 };
 </script>
 

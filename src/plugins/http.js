@@ -5,11 +5,10 @@ MyHttpServer.install = Vue => {
   // 添加请求拦截器
   axios.interceptors.request.use(
     function(config) {
-    
-    if(config.url !== 'login') {
+      if (config.url !== "login") {
         const AUTH_TOKEN = localStorage.getItem("token");
         config.headers["Authorization"] = AUTH_TOKEN;
-    }
+      }
 
       // 在发送请求之前做些什么
       return config;
@@ -31,7 +30,7 @@ MyHttpServer.install = Vue => {
       return Promise.reject(error);
     }
   );
-//   设置基准地址
+  //   设置基准地址
   axios.defaults.baseURL = "http://localhost:8888/api/private/v1/";
   Vue.prototype.$http = axios;
 };

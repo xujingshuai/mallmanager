@@ -33,9 +33,9 @@
       </el-table-column>
       <el-table-column label="层级">
         <template slot-scope="scope">
-            <span v-if="scope.row.level === '0'">一级</span>
-            <span v-if="scope.row.level === '1'">二级</span>
-            <span v-if="scope.row.level === '2'">三级</span>
+          <span v-if="scope.row.level === '0'">一级</span>
+          <span v-if="scope.row.level === '1'">二级</span>
+          <span v-if="scope.row.level === '2'">三级</span>
         </template>
       </el-table-column>
     </el-table>
@@ -44,27 +44,27 @@
 
 <script>
 export default {
-    data() {
-        return {
-            rightList: []
-        }
-    },
-    created() {
-        this.getRightList();
-    },
-    methods: {
-        // 获取所有权限列表
-        async getRightList() {
-            const res = await this.$http.get(`rights/list`)
-            this.rightList = res.data.data;
-            console.log(res);
-        }
+  data() {
+    return {
+      rightList: []
+    };
+  },
+  created() {
+    this.getRightList();
+  },
+  methods: {
+    // 获取所有权限列表
+    async getRightList() {
+      const res = await this.$http.get(`rights/list`);
+      this.rightList = res.data.data;
+      console.log(res);
     }
+  }
 };
 </script>
 
 <style>
-    .rightTable {
-        margin-top: 20px;
-    }
+.rightTable {
+  margin-top: 20px;
+}
 </style>
