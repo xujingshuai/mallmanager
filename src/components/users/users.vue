@@ -156,10 +156,10 @@ export default {
       dialogFormVisibleRole: false,
       // 添加对话框的值
       form: {
-username: "",
-password: "",
-email: "",
-mobile: ""
+        username: "",
+        password: "",
+        email: "",
+        mobile: ""
       },
       // 分配角色绑定数据
       currRoleId: -1,
@@ -178,7 +178,7 @@ mobile: ""
     // 点击分配角色的确定按钮
     async setRole() {
       const res = await this.$http.put(`users/${this.currUserId}/role`,{
-rid: this.currRoleId
+        rid: this.currRoleId
       })
       // 关闭对话框
       this.dialogFormVisibleRole = false;
@@ -209,10 +209,10 @@ rid: this.currRoleId
       const res = await this.$http.put(`users/${user.id}/state/${user.mg_state}`)
       const {meta: {status, msg}, data} = res.data
       if(status === 200) {
-// 提示成功
-this.$message.success(msg);
-      } else {
-this.$message.error(msg);
+        // 提示成功
+        this.$message.success(msg);
+              } else {
+        this.$message.error(msg);
       }
     },
     // 编辑用户 -- 发送请求
@@ -235,30 +235,28 @@ this.$message.error(msg);
     // 删除用户-显示消息框(confirm)
     showDeleUserMsgBox(userId) {
       this.$confirm("是否删除", "提示", {
-confirmButtonText: "确定",
-cancelButtonText: "取消",
-type: "warning"
-      })
-.then(async () => {
-  // 发送请求
-  const res = await this.$http.delete(`users/${userId}`);
-  const {
-    meta: { status, msg },
-    data
-  } = res.data;
-  if (status === 200) {
-    // 回到第一页
-    this.pagenum = 1;
-    // 更新视图
-    this.loadData();
-    // 提示
-    this.$message({
-      type: "success",
-      message: msg
-    });
-  }
-})
-.catch(() => {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(async () => {
+        // 发送请求
+        const res = await this.$http.delete(`users/${userId}`);
+        const {
+          meta: { status, msg },
+          data
+        } = res.data;
+        if (status === 200) {
+          // 回到第一页
+          this.pagenum = 1;
+          // 更新视图
+          this.loadData();
+          // 提示
+          this.$message({
+            type: "success",
+            message: msg
+          });
+        }
+      }).catch(() => {
   this.$message({
     type: "info",
     message: "已取消删除"
@@ -270,28 +268,25 @@ type: "warning"
       // alert('11111111');
       // 发送请求
       const res = await this.$http.post(`users`, this.form);
-      const {
-meta: { status, msg },
-data
-      } = res.data;
-      // 2. 关闭对话框
-      this.dialogFormVisibleAdd = false;
-      if (status === 201) {
-// 1. 提示成功
-this.$message.success(msg);
-// 3. 更新视图
-this.loadData();
-// 回到第一页
-// this.pagenum = 1;
-// 4. 清空文本框
-this.form = {};
-      } else {
-this.$message.warning(msg);
-      }
-    },
+      const {meta: {status, msg },data} = res.data;
+            // 2. 关闭对话框
+            this.dialogFormVisibleAdd = false;
+            if (status === 201) {
+              // 1. 提示成功
+              this.$message.success(msg);
+              // 3. 更新视图
+              this.loadData();
+              // 回到第一页
+              // this.pagenum = 1;
+            } else {
+              this.$message.warning(msg);
+            }
+          },
     // 显示添加用户对话框
     showAddUserDia() {
       this.dialogFormVisibleAdd = true;
+      // 清空对话框内容
+      this.form = {};
     },
     // 清空搜索框
     loadUserList() {
